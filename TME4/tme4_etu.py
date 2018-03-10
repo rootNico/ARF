@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from gradient_descend import optimize
+from utils import minibatch_indexes,polynomial
 
 def decorator_vec(fonc):
     def vecfonc(datax,datay,w,*args,**kwargs):
@@ -29,32 +30,30 @@ def mse_g(datax,datay,w):
 @decorator_vec
 def hinge(datax,datay,w):
     """ retourn la moyenne de l'erreur hinge """
-    t = np.dot(w,datax.T)
-    droit = t*(-datay.T)
-    maximum = droit*(droit > 0)
-    return np.mean(maximum)
+    return np.mean(np.maximum(0, - datay * datax.dot(w.T)))
+    #return np.mean((- datay * datax.dot(w.T)).clip(min=0))
     
     
 @decorator_vec
 def hinge_g(datax,datay,w):
     """ retourne le gradient moyen de l'erreur hinge """
-    t = np.dot(w,datax.T)
-    droit = t*(datay.T)
-    negative = datay * datax
-    output = (droit <= 0) * negative.T
-    return output.mean(axis=1)
+    t = datax.dot(w.T)
+    positive = np.sign((- datay * t).clip(min=0))
+    return positive.T.dot(datax) / len(datay)
     
 
 class Lineaire(object):
-    def __init__(self,loss=hinge,loss_g=hinge_g,max_iter=1000,eps=0.01):
+    def __init__(self,loss=hinge,loss_g=hinge_g,max_iter=1000,eps=0.01, polynomial_degree=0):
         """ :loss: fonction de cout
             :loss_g: gradient de la fonction de cout
             :max_iter: nombre d'iterations
             :eps: pas de gradient
+            :polynomial_degree: 0 degree fait rien
         """
         self.max_iter, self.eps = max_iter,eps
         self.loss, self.loss_g = loss, loss_g
-
+        self.polynomial_degree = polynomial_degree
+        
     def fit(self,datax,datay,testx=None,testy=None):
         """ :datax: donnees de train
             :datay: label de train
@@ -64,24 +63,50 @@ class Lineaire(object):
         datay = datay.reshape(-1,1)
         N = len(datay)
         datax = datax.reshape(N,-1)
+        datax = polynomial(datax, self.polynomial_degree)
         D = datax.shape[1]
-        initial = np.random.random((1,D))
+        xinit = np.random.random((1,D))
         loss = lambda x: self.loss(datax, datay, x)
         loss_g = lambda x: self.loss_g(datax, datay, x)
-        x_histo,f_histo,_ = optimize(loss, loss_g, initial, self.eps, self.max_iter)
+        ### optimize
+        x_histo = []
+        f_histo = []
+        
+        batchsize = 32
+        batches = minibatch_indexes(datax.shape[0],batchsize, shuffle=True)
+        batch_count = batches.shape[0]
+       
+        grad_histo = []
+        dernier = xinit
+        for i in range(self.max_iter):
+            batch = batches[i % batch_count]
+            X = datax[batch]
+            Y = datay[batch]
+            fonc = lambda x: self.loss(X, Y, x)
+            dfonc = lambda x: self.loss_g(X, Y, x)
+            
+            x_histo.append(dernier - (self.eps * dfonc(dernier)))
+            f_histo.append(fonc(dernier))
+            
+            grad_histo.append(dfonc(dernier))
+            dernier = x_histo[i]
+        x_histo = np.array(x_histo)
+        f_histo = np.array(f_histo)
+        
+        ###
+        
         optimal_idx = f_histo.argmin()
         self.w = x_histo[optimal_idx].reshape(-1,1)
         
-
     def predict(self,datax):
         if len(datax.shape)==1:
             datax = datax.reshape(1,-1)
+        datax = polynomial(datax, self.polynomial_degree)
         return np.array([np.sign(np.dot(self.w.T,x)) for x in datax]).flatten()
 
     def score(self,datax,datay):
         prediction = self.predict(datax)
         return np.count_nonzero(prediction == datay) / datax.shape[0]
-
 
 
 def load_usps(fn):
