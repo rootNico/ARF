@@ -85,6 +85,35 @@ La difference difference entre le score dans aprentissage et test est le plus pe
 Quand il y a que peu d'examples d'apprentissage, l'erreur est plus éleve dans le test.
 Par contre quand on a beacoup des d'examples d'aprentissage, l'erreur dans le test est moins d'élevé.
 
+\begin{figure}[h!]
+\caption{Score d'arbre de decision en faisant varier le profondeur}
+\label{fig:tme1_scores}
+\begin{subfigure}{.5\textwidth}
+	\centering
+	\label{fig:partition_2_8}
+	\includegraphics[width=0.8\linewidth]{images/tme1/partition_2_8.png}
+	\caption{Donnée aprentissage et test : 0.2 / 0.8}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+	\label{fig:partition_5_5}
+	\includegraphics[width=0.8\linewidth]{images/tme1/partition_5_5.png}
+	\caption{Donnée aprentissage et test : 0.5 / 0.5}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+	\label{fig:partition_8_2}
+	\includegraphics[width=0.8\linewidth]{images/tme1/partition_8_2.png}
+	\caption{Donnée aprentissage et test : 0.8 / 0.2}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+	\label{fig:partition_vc}
+	\includegraphics[width=0.8\linewidth]{images/tme1/partition_vc.png}
+	\caption{Validation croisee}
+\end{subfigure}
+\end{figure}
+
 Avec validation croisée on obtient un score plus fiable et stable.
 Dans la figure \autoref{fig:tme1_scores} (d) nous pouvons constater, comment le score augmente au début avec la profondeur maximale, mais à la fin il tombe.
 Ça c'est à cause de sous et sur apprentissage.
@@ -93,36 +122,126 @@ Quand la profondeur se monte sur cinq,
 nous commençons à apprendre les données d'apprentissage à la façon trop détaillée et le score sur le test se tombe (sur aprentissage).
 La profondeur maximale 4 semble optimal.
 
-\begin{figure}
-\caption{Score d'arbre de decision en faisant varier le profondeur}
-\label{fig:tme1_scores}
+\section{TME 2 : Estimation de densité}
+
+Nous sommes intéressés de densité des services différents de Paris.
+
+\subsection{Méthode des histogrammes}
+
+La méthode la plus simple, méthode des histogrammes, il s'agit de partager la valeur continue (latitude et longitude)
+à les intervalles fixés et compter, combien d'occurrences chacun contient.
+
+\begin{figure}[h!]
+\caption{Densite par méthode des histogrammes}
+\label{fig:tme2_histos}
 \begin{subfigure}{.5\textwidth}
 	\centering
-	\label{fig:partition_2_8}
-	\includegraphics[width=0.4\linewidth]{images/tme1/partition_2_8.png}
-	\caption{Donnée aprentissage et test : 0.2 / 0.8}
+	\label{fig:atms_brut}
+	\includegraphics[width=0.8\linewidth]{images/tme2/atms_brut.png}
+	\caption{Les ATMs à Paris}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
   \centering
-	\label{fig:partition_5_5}
-	\includegraphics[width=0.4\linewidth]{images/tme1/partition_5_5.png}
-	\caption{Donnée aprentissage et test : 0.5 / 0.5}
+	\label{fig:atms_histo_5}
+	\includegraphics[width=0.8\linewidth]{images/tme2/atms_histo_5.png}
+	\caption{Histogramme avec 5 intervalles}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
   \centering
-	\label{fig:partition_8_2}
-	\includegraphics[width=0.4\linewidth]{images/tme1/partition_8_2.png}
-	\caption{Donnée aprentissage et test : 0.8 / 0.2}
+	\label{fig:atms_histo_10}
+	\includegraphics[width=0.8\linewidth]{images/tme2/atms_histo_10.png}
+	\caption{Histogramme avec 10 intervalles}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
   \centering
-	\label{fig:partition_vc}
-	\includegraphics[width=0.4\linewidth]{images/tme1/partition_vc.png}
-	\caption{Validation croisee}
+	\label{fig:atms_histo_15}
+	\includegraphics[width=0.8\linewidth]{images/tme2/atms_histo_15.png}
+	\caption{Histogramme avec 15 intervalles}
 \end{subfigure}
 \end{figure}
 
-\section{TME 2 : Estimation de densité}
+On peut voir bien avec chaque discretization de \autoref{fig:tme2_histos}, que la densité maximum des ATMs est dans 9iéme arrondissement.
+Par contre, la densite n'est pas très visible dans les endroits où la densité est moins forte (par exemple 13iéme arrondissement).
+Surtout avec 15 étapes, nous ne voyons pas très bien.
+
+\subsection{Méthode à noyaux}
+
+Comme la méthode de histogramme ne permet pas de visualiser les atms bien avec 15 étapes, je vais fixer le variable étapes à 15 pour l'estimation par noyau.
+L'estimation par noyau a une variable h qui est taille de lissage. On va varier d'abord h.
+
+\begin{figure}[h!]
+\caption{Parzen comme fonction de Noyau}
+\label{fig:tme2_parzen}
+\begin{subfigure}{.24\textwidth}
+	\centering
+	\includegraphics[width=\linewidth]{images/tme2/atms_parzen_0.png}
+\end{subfigure}%
+\begin{subfigure}{.24\textwidth}
+  \centering
+	\includegraphics[width=\linewidth]{images/tme2/atms_parzen_1.png}
+\end{subfigure}
+\begin{subfigure}{.24\textwidth}
+  \centering
+	\includegraphics[width=\linewidth]{images/tme2/atms_parzen_2.png}
+\end{subfigure}
+\begin{subfigure}{.24\textwidth}
+  \centering
+	\includegraphics[width=\linewidth]{images/tme2/atms_parzen_3.png}
+\end{subfigure}
+\end{figure}
+
+Dans \autoref{fig:tme2_parzen}, si h >= 0.25, l'estimation est "oversmoothed".
+h = 0.15 l'air le plus optimal, car il prend en compte les points partout à Paris, mais la densité est également visible.
+
+\begin{figure}[h!]
+\caption{Gauss comme fonction de Noyau}
+\label{fig:tme2_gauss}
+\begin{subfigure}{.24\textwidth}
+	\centering
+	\includegraphics[width=\linewidth]{images/tme2/atms_gauss_0.png}
+\end{subfigure}%
+\begin{subfigure}{.24\textwidth}
+  \centering
+	\includegraphics[width=\linewidth]{images/tme2/atms_gauss_1.png}
+\end{subfigure}
+\begin{subfigure}{.24\textwidth}
+  \centering
+	\includegraphics[width=\linewidth]{images/tme2/atms_gauss_2.png}
+\end{subfigure}
+\begin{subfigure}{.24\textwidth}
+  \centering
+	\includegraphics[width=\linewidth]{images/tme2/atms_gauss_3.png}
+\end{subfigure}
+\end{figure}
+
+Avec le gaussien (\autoref{fig:tme2_gauss}), le meilleur paramètre de lissage est peut-être 0.05.
+
+\subsubsection{Comment choisir de manière automatique le meilleur taille de lissage h ?}
+
+Selon \citep{wiki:kernel_density}, nous pouvons estimer l’optimal taille de lissage h pour noyau de Gauss. 
+L’estimation est definit dans \autoref{equation:bandwidth_estim}.
+
+\begin{equation}
+\label{equation:bandwidth_estim}
+h = \left(\frac{4\hat{\sigma}^5}{3n}\right)^{\frac{1}{5}} \approx 1.06 \hat{\sigma} n^{-1/5}
+\end{equation}
+
+Nous obtenons h=0.110482310867 pour les données des ATMs à Paris, visualisé dans \autoref{fig:atms_gauss_optimal}.
+
+\begin{figure}[h!]
+\caption{Densité avec la méthode de noyaux (Gauss) et lissage optimale}
+\label{fig:atms_gauss_optimal}
+\centering
+\includegraphics[width=0.6\linewidth]{images/tme2/atms_gauss_optimal.png}
+\end{figure}%
+
+L'optimal "rule-of-thumb" estimateur minimise l'erreur de moindre carrée intégré (Mean integrated squared error). 
+Il permet de montrer le "vraie" distribution, que les POIs vont suivre. 
+J'ai visualisé également les autres POIs avec le noyaux de Gauss et l'optimal h. 
+J'ai constaté que les visualisations ne sont pas très différentes. 
+Les différentes POIs sont distribués à Paris plus ou moins à la même façon : 
+en centre-ville la densité est grande, d'ailleurs moins. 
+Donc je pense que ça sera difficile de classifier les POIs seulement par rapport ses localisations.
 
 \section{TME 3 : Descente de gradient}
 
@@ -132,5 +251,8 @@ La profondeur maximale 4 semble optimal.
 
 
 \subsection{Pistes de recherche}
+
+\bibliographystyle{plainnat}
+\bibliography{biblio}
 
 \end{document}

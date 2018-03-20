@@ -11,3 +11,5 @@ sandbox/
 *.out
 *.aux
 *.toc
+*.bbl
+*.blg
