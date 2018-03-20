@@ -245,6 +245,65 @@ Donc je pense que ça sera difficile de classifier les POIs seulement par rappor
 
 \section{TME 3 : Descente de gradient}
 
+Cette semaine nous avons implémente la descente de gradient et appliqué ça à régression logistique.
+
+\subsection{Optimisation de fonctions}
+
+Dans le \autoref{fig:tme3_descente} il y a des visualisations de fonctionnement de descente de gradient. 
+Nous optimisons le fonction f donnée, en cherchent son minimum (locale, car f(x) = x cos(x) n'est pas convexe). 
+L'axe y correspond la valeur de f(x), donc le minimum local est au fond de courbe et l'axe x correspond les valeurs de x.
+
+\begin{figure}[h!]
+\caption{La descente de gradiente de f(x) = x cos(x)}
+\label{fig:tme3_descente}
+\begin{subfigure}{.33\textwidth}
+	\centering
+	\includegraphics[width=\linewidth]{images/tme3/descente_0.png}
+	\caption{}
+\end{subfigure}%
+\begin{subfigure}{.33\textwidth}
+  \centering
+	\includegraphics[width=\linewidth]{images/tme3/descente_1.png}
+	\caption{}
+\end{subfigure}
+\begin{subfigure}{.33\textwidth}
+  \centering
+	\includegraphics[width=\linewidth]{images/tme3/descente_2.png}
+	\caption{}
+\end{subfigure}
+\end{figure}
+
+Si le bas de descente de gradient est trop petit ou grande, 
+il y a une risque que, à la fin des itérations d'algorithme, nous n'arrivons pas à minimum de fonction.
+(\autoref{fig:tme3_descente} a et c).
+
+Dans le \autoref{fig:tme3_descente_direction} j'ai plotté le direction de descente (defini dans \autoref{equation:descente}) de chaque epsilon de figure
+precedent. On peut deduire, que le premier ne descend pas, car son epsilon est negative (direction faux).
+Troisiéme descend jusqu'a certain moment, mais apres il commence bugger (epsilon tros grand).
+Au milieu, le descend est par contre assez direct vers le minimum.
+
+\begin{equation}
+\label{equation:descente}
+	\left ( t, \log \left \| x^{t} - x^{*} \right  \| \right )
+\end{equation}
+
+\begin{figure}[h!]
+\caption{Direction de descente (\autoref{equation:descente})}
+\label{fig:tme3_descente_direction}
+\begin{subfigure}{.33\textwidth}
+	\centering
+	\includegraphics[width=\linewidth]{images/tme3/descente_error_0.png}
+\end{subfigure}%
+\begin{subfigure}{.33\textwidth}
+  \centering
+	\includegraphics[width=\linewidth]{images/tme3/descente_error_1.png}
+\end{subfigure}
+\begin{subfigure}{.33\textwidth}
+  \centering
+	\includegraphics[width=\linewidth]{images/tme3/descente_error_2.png}
+\end{subfigure}
+\end{figure}
+
 \section{TME 4 et 5 : Perceptron}
 
 \section{TME 5 : Support Vector Machine}
