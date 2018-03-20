@@ -79,19 +79,23 @@ Mais ces scores ne sont pas un indicateur fiable, si nous ne faisons pas différ
 
 \subsection{Q1.7 -  Sur et sous apprentissage }
 
-Le partition 0.8 / 0.2 dans figure ~\ref{fig:partition_8_2} (c) semble d'etre le plus robust pour test et training.
+Le partition 0.8 / 0.2 dans ~\autoref{fig:tme1_scores} (c) semble d'etre le plus robust pour test et training.
+La difference difference entre le score dans aprentissage et test est le plus petit parmis (a),(b) et (c).
 
 Quand il y a que peu d'examples d'apprentissage, l'erreur est plus éleve dans le test.
 Par contre quand on a beacoup des d'examples d'aprentissage, l'erreur dans le test est moins d'élevé.
 
 Avec validation croisée on obtient un score plus fiable et stable.
-Dans la figure (d) nous pouvons constater, comment le score augmente au début avec la profondeur maximale, mais à la fin il tombe.
+Dans la figure \autoref{fig:tme1_scores} (d) nous pouvons constater, comment le score augmente au début avec la profondeur maximale, mais à la fin il tombe.
 Ça c'est à cause de sous et sur apprentissage.
-Au début, on généralise beaucoup avec un arbre peu profond.
+Au début, on généralise beaucoup avec un arbre peu profond (sous apprentissage).
 Quand la profondeur se monte sur cinq,
-nous commençons à apprendre les données d'apprentissage à la façon trop détaillée et le score sur le test se tombe.
+nous commençons à apprendre les données d'apprentissage à la façon trop détaillée et le score sur le test se tombe (sur aprentissage).
+La profondeur maximale 4 semble optimal.
 
 \begin{figure}
+\caption{Score d'arbre de decision en faisant varier le profondeur}
+\label{fig:tme1_scores}
 \begin{subfigure}{.5\textwidth}
 	\centering
 	\label{fig:partition_2_8}
@@ -116,8 +120,6 @@ nous commençons à apprendre les données d'apprentissage à la façon trop dé
 	\includegraphics[width=0.4\linewidth]{images/tme1/partition_vc.png}
 	\caption{Validation croisee}
 \end{subfigure}
-\caption{Score d'arbre de decision en faisant varier le profondeur}
-\label{fig:fig}
 \end{figure}
 
 \section{TME 2 : Estimation de densité}
