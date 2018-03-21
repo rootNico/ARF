@@ -4,7 +4,28 @@ from random import sample as rand_sample
 
 def filter_values(x, y, a,b):
     indexes = np.where(np.logical_or(y == a, y == b))[0]
-    return np.array(x[indexes]),np.array(y[indexes])
+    Y = np.array(y[indexes])
+    Y[Y == a] = -1
+    Y[Y == b] = 1
+    return np.array(x[indexes]),Y
+
+def one_againt_others(x, y, num):
+    indexes = np.where(y == num)[0]
+    new_y = -np.ones(y.shape[0])
+    new_y[indexes] = 1
+    return x,new_y
+
+def minibatch_indexes(N, batchsize, shuffle=False):
+    if shuffle:
+        indices = np.arange(N)
+        np.random.shuffle(indices)
+    batches = []
+    for start_idx in range(0, N - batchsize + 1, batchsize):
+        if shuffle:
+            batches.append(indices[start_idx:start_idx + batchsize])
+        else:
+            batches.append(slice(start_idx, start_idx + batchsize))
+    return np.array(batches)
 
 def load_usps(filename, sample=-1):
     with open(filename,"r") as f:

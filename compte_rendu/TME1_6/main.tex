@@ -6,6 +6,7 @@
 \usepackage{float}
 
 \usepackage[utf8]{inputenc}
+\usepackage[bottom]{footmisc}
 
 %Rajoute des régles de typo
 \usepackage[french]{babel}
@@ -280,7 +281,7 @@ il y a une risque que, à la fin des itérations d'algorithme, nous n'arrivons p
 Dans le \autoref{fig:tme3_descente_direction} j'ai plotté le direction de descente (defini dans \autoref{equation:descente}) de chaque epsilon de figure
 precedent. On peut deduire, que le premier ne descend pas, car son epsilon est negative (direction faux).
 Troisiéme descend jusqu'a certain moment, mais apres il commence bugger (epsilon tros grand).
-Au milieu, le descend est par contre assez direct vers le minimum.
+Au milieu, le descente est par contre assez direct vers le minimum.
 
 \begin{equation}
 \label{equation:descente}
@@ -303,6 +304,53 @@ Au milieu, le descend est par contre assez direct vers le minimum.
 	\includegraphics[width=\linewidth]{images/tme3/descente_error_2.png}
 \end{subfigure}
 \end{figure}
+
+Mon implémentation de descente de gradient ne fonctionne pas parfaitement. 
+Dans le \autoref{fig:descente_rosenbrock} il y a une optimisation de fonction de Rosenbrock, où on peut voir que l'algorithme ne converge pas à vrai minimum de fonction. 
+Cette fonction est connue pour ça que c'est difficile de converger à son minimum.
+
+\begin{figure}[h!]
+\caption{C'est difficile de converger à minimum de fonction de Rosenbrock}
+\label{fig:descente_rosenbrock}
+\centering
+\includegraphics[width=0.4\linewidth]{images/tme3/descente_rosenbrock.png}
+\end{figure}%
+
+\subsection{Regression logistique}
+
+J'ai implémente\footnote{Code dans TME3\slash Logistic\_regression.py} 
+régression logistique, qui utilise la descente de gradient pour optimiser log vraisemblance.
+
+Je vais comparer classification des nombres différents (les données USPS). 
+Pour le pas de descente de gradient j'ai fixé eps = 0.025 qui fonctionne bien avec différents nombres.
+
+Pour chaque combination $$\left ( i,j \right ) \in \left \{ 0...9 \right \} \times  \left \{ 0...9 \right \}$$ 
+nous calculons dans \autoref{fig:logistique_numbers} a) les scores avec cinq iteration de validation croisée.
+Puis dans \autoref{fig:logistique_numbers} b) il y a le precision (avec validation croisée de cinq scores) de chaque nombre comparée à tous les autres nombres.
+Ça va dire, que nous mettons le classe -1 pour cet nombre et classe 1 pour tous les autres.
+
+\begin{figure}[h!]
+\caption{La regression logistique}
+\label{fig:logistique_numbers}
+\begin{subfigure}{.5\textwidth}
+	\centering
+	\includegraphics[width=\linewidth]{images/tme3/logistic_one_vs_one.png}
+	\caption{Les nombres un contre un}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+	\includegraphics[width=\linewidth]{images/tme3/USPS_one_vs_all.png}
+	\caption{Les nombres un contre tous}
+\end{subfigure}
+\end{figure}
+
+Nous pouvons constater dans \autoref{fig:logistique_numbers} a) par exemple que le nombre 5 étant classe -1 et 3 étant classe 1 on obtiens score mal. 
+Également le nombre zéro est difficile de classifier, comme on peut voir dans \autoref{fig:logistique_numbers} a) sur 
+le premier ligne et dans \autoref{fig:logistique_numbers} b) la valeur de 0 sur axis x.
+
+La difficulté avec zéro est probablement à cause de fait, qu'on a beaucoup plus de zeros dans les données que les autres et la forme de zero est distribué largement
+et est donc facile de mélanger avec les autres.
+
 
 \section{TME 4 et 5 : Perceptron}
 
