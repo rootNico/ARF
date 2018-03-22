@@ -364,7 +364,98 @@ de naif bayes (comme pour nombre 1 : avec NB c'est presque parfait le classifica
 
 \section{TME 4 et 5 : Perceptron}
 
-\section{TME 5 : Support Vector Machine}
+Cette semaine nous avons implémente perceptron\footnote{Code dans TME4\slash tme4\_etu.py}
+et nous avons réalisé plusieurs expériences. Dans \autoref{fig:tme4_perceptron} a) nous avons visualisation de
+données artificiel et la frontiére de decision de perceptron. Perceptron cherche le separateur lineaire, (corbe au milieu)
+qui partage les données.
+
+\begin{figure}[h!]
+\caption{Perceptron avec les données artifiel en 2 dimension}
+\label{fig:tme4_perceptron}
+\begin{subfigure}{.33\textwidth}
+	\centering
+	\includegraphics[width=\linewidth]{images/tme4/perceptron_no_biais.png}
+	\caption{Sans biais}
+\end{subfigure}%
+\begin{subfigure}{.33\textwidth}
+  \centering
+	\includegraphics[width=\linewidth]{images/tme4/perceptron_biais1.png}
+	\caption{Avec biais}
+\end{subfigure}
+\begin{subfigure}{.33\textwidth}
+  \centering
+	\includegraphics[width=\linewidth]{images/tme4/perceptron_biais3.png}
+	\caption{Avec polynomial de 3iéme degree}
+\end{subfigure}
+\end{figure}
+
+\subsection{Prise en compte de biais}
+
+Dans \autoref{fig:tme4_perceptron} b) j'ai utilisé également le biais, qui permet de ne pas passer par origo. Dans le formulation
+d'algorithme de perceptron, nous utilisons fonction f (\autoref{equation:perceptron1}) en aprentissage (dans le fonction coût) et
+en classifiant les nouvelles examples. Le biais correspond le premier terme $w_{0}$ dans (\autoref{equation:perceptron2}).
+
+\begin{equation}
+\label{equation:perceptron1}
+	f(x_{i}) = \sum_{j} x_{ij} w_{j} = x_{i}\cdot w^{T}
+\end{equation}
+\begin{equation}
+\label{equation:perceptron2}
+	w = [w_{0},w_{1},..,w_{d}]
+\end{equation}
+
+À grace de $w_{0}$ nous pouvons en theorie augmenter l'expressivité de model. En revanche, la précision de classification n'augmente pas forcement, si on ajoute biais.
+Dans le figure \autoref{fig:scores_biais_non_poly} on voit que la précision (avec validation croisée de 5 fois)
+avec biais est supérieur de la précision de la formulation non-biais seulement quand on effectue 2000, 6000 ou 8000 itérations.
+Mais en général il est inférieur.
+
+\begin{figure}[h!]
+\caption{Les scores avec validation croisée de 5 iterations}
+\label{fig:scores_biais_non_poly}
+\includegraphics[width=0.5\linewidth]{images/tme4/scores_biais_non_poly.png}
+\centering
+\end{figure}%
+
+\subsection{USPS et sur-aprentissage}
+
+Nous allons utiliser les données des USPS, les chiffres manuscrits. Le model $w$ qu'on apprendre en classifiant les
+chiffres peut être interpretable. Dans le \autoref{fig:tme4_w} nous voyons les chiffres 0 (a) et 1 (b),
+mais le model pour reconnetre les chiffres 4 et 9 (presenté en c) n'est pas trés interpretable.
+
+\begin{figure}[h!]
+\caption{Le model w dans perceptron}
+\label{fig:tme4_w}
+\begin{subfigure}{.33\textwidth}
+	\centering
+	\includegraphics[width=\linewidth]{images/tme4/weight_w0.png}
+	\caption{0 contre 1}
+\end{subfigure}%
+\begin{subfigure}{.33\textwidth}
+  \centering
+	\includegraphics[width=\linewidth]{images/tme4/weight_w1.png}
+	\caption{1 contre 0}
+\end{subfigure}
+\begin{subfigure}{.33\textwidth}
+  \centering
+	\includegraphics[width=\linewidth]{images/tme4/weight_w49.png}
+	\caption{4 contre 9}
+\end{subfigure}
+\end{figure}
+
+J'ai etudié, quelle est l'effet de polynomial pour sur-apprentissage. En faisant varier le degree de polynomial,
+j'ai pas noté grande difference. Dans \autoref{fig:USPS_polynomial_4} j'ai plotté les results
+ (chiffre 4)  avec polynomial de 3 degrée, et on peut voir que le score ne tombe pas beaucoup.
+
+\begin{figure}[h!]
+\caption{Le chiffre 4 contre les autres avec polynomial de 3 degrée}
+\label{fig:USPS_polynomial_4}
+\includegraphics[width=0.5\linewidth]{images/tme4/USPS_polynomial_4.png}
+\centering
+\end{figure}%
+
+
+
+\section{TME 6 : Support Vector Machine}
 
 
 \subsection{Pistes de recherche}
