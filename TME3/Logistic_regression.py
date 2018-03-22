@@ -3,9 +3,10 @@ from utils import minibatch_indexes
 
 class Logistic_regression:
     
-    def __init__(self, max_iter=10, eps=0.1):
+    def __init__(self, max_iter=10, eps=0.1, batch_size = 16):
         self.max_iter = max_iter
         self.eps = eps
+        self.batch_size = batch_size
     
     def log_likelihood(self, X, Y, W): # w0
         return -sum([np.log(1 + np.exp(-(2 * Y[i] - 1) * np.dot(W.T, X[i]))) for i in range(len(X))])
@@ -21,8 +22,7 @@ class Logistic_regression:
         x_histo = []
         f_histo = []
         
-        batchsize = 32
-        batches = minibatch_indexes(datax.shape[0],batchsize, shuffle=True)
+        batches = minibatch_indexes(datax.shape[0],self.batch_size, shuffle=True)
         batch_count = batches.shape[0]
        
         grad_histo = []
@@ -56,10 +56,14 @@ class Logistic_regression:
         #self.W0 = x_histo[optimal_idx][columns['W0']]
         return self
         
+    def classify_one(self,x,w):
+        proba = 1 / (1 + np.exp(-np.dot(w,x)))
+        return 1 if proba < 0.5 else -1
+        
     def predict(self,datax):
         assert datax.shape[1] == len(self.W)
-        return np.array([np.sign(-np.dot(self.W.T, x)) for x in datax])
-        
+        return np.array([self.classify_one(x,self.W) for x in datax])
+    
     def score(self,datax,datay):
         labels = self.predict(datax)
         return np.count_nonzero(self.predict(datax) == datay) / datax.shape[0], labels

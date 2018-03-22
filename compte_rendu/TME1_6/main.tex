@@ -219,7 +219,7 @@ Avec le gaussien (\autoref{fig:tme2_gauss}), le meilleur paramètre de lissage e
 
 \subsubsection{Comment choisir de manière automatique le meilleur taille de lissage h ?}
 
-Selon \citep{wiki:kernel_density}, nous pouvons estimer l’optimal taille de lissage h pour noyau de Gauss. 
+Selon \citep{wiki:kernel_density}, nous pouvons estimer l’optimal taille de lissage h pour noyau de Gauss.
 L’estimation est definit dans \autoref{equation:bandwidth_estim}.
 
 \begin{equation}
@@ -236,12 +236,12 @@ Nous obtenons h=0.110482310867 pour les données des ATMs à Paris, visualisé d
 \includegraphics[width=0.6\linewidth]{images/tme2/atms_gauss_optimal.png}
 \end{figure}%
 
-L'optimal "rule-of-thumb" estimateur minimise l'erreur de moindre carrée intégré (Mean integrated squared error). 
-Il permet de montrer le "vraie" distribution, que les POIs vont suivre. 
-J'ai visualisé également les autres POIs avec le noyaux de Gauss et l'optimal h. 
-J'ai constaté que les visualisations ne sont pas très différentes. 
-Les différentes POIs sont distribués à Paris plus ou moins à la même façon : 
-en centre-ville la densité est grande, d'ailleurs moins. 
+L'optimal "rule-of-thumb" estimateur minimise l'erreur de moindre carrée intégré (Mean integrated squared error).
+Il permet de montrer le "vraie" distribution, que les POIs vont suivre.
+J'ai visualisé également les autres POIs avec le noyaux de Gauss et l'optimal h.
+J'ai constaté que les visualisations ne sont pas très différentes.
+Les différentes POIs sont distribués à Paris plus ou moins à la même façon :
+en centre-ville la densité est grande, d'ailleurs moins.
 Donc je pense que ça sera difficile de classifier les POIs seulement par rapport ses localisations.
 
 \section{TME 3 : Descente de gradient}
@@ -250,8 +250,8 @@ Cette semaine nous avons implémente la descente de gradient et appliqué ça à
 
 \subsection{Optimisation de fonctions}
 
-Dans le \autoref{fig:tme3_descente} il y a des visualisations de fonctionnement de descente de gradient. 
-Nous optimisons le fonction f donnée, en cherchent son minimum (locale, car f(x) = x cos(x) n'est pas convexe). 
+Dans le \autoref{fig:tme3_descente} il y a des visualisations de fonctionnement de descente de gradient.
+Nous optimisons le fonction f donnée, en cherchent son minimum (locale, car f(x) = x cos(x) n'est pas convexe).
 L'axe y correspond la valeur de f(x), donc le minimum local est au fond de courbe et l'axe x correspond les valeurs de x.
 
 \begin{figure}[h!]
@@ -274,7 +274,7 @@ L'axe y correspond la valeur de f(x), donc le minimum local est au fond de courb
 \end{subfigure}
 \end{figure}
 
-Si le bas de descente de gradient est trop petit ou grande, 
+Si le bas de descente de gradient est trop petit ou grande,
 il y a une risque que, à la fin des itérations d'algorithme, nous n'arrivons pas à minimum de fonction.
 (\autoref{fig:tme3_descente} a et c).
 
@@ -305,8 +305,8 @@ Au milieu, le descente est par contre assez direct vers le minimum.
 \end{subfigure}
 \end{figure}
 
-Mon implémentation de descente de gradient ne fonctionne pas parfaitement. 
-Dans le \autoref{fig:descente_rosenbrock} il y a une optimisation de fonction de Rosenbrock, où on peut voir que l'algorithme ne converge pas à vrai minimum de fonction. 
+Mon implémentation de descente de gradient ne fonctionne pas parfaitement.
+Dans le \autoref{fig:descente_rosenbrock} il y a une optimisation de fonction de Rosenbrock, où on peut voir que l'algorithme ne converge pas à vrai minimum de fonction.
 Cette fonction est connue pour ça que c'est difficile de converger à son minimum.
 
 \begin{figure}[h!]
@@ -318,16 +318,14 @@ Cette fonction est connue pour ça que c'est difficile de converger à son minim
 
 \subsection{Regression logistique}
 
-J'ai implémente\footnote{Code dans TME3\slash Logistic\_regression.py} 
+J'ai implémente\footnote{Code dans TME3\slash Logistic\_regression.py}
 régression logistique, qui utilise la descente de gradient pour optimiser log vraisemblance.
 
-Je vais comparer classification des nombres différents (les données USPS). 
+Je vais comparer classification des nombres différents (les données USPS).
 Pour le pas de descente de gradient j'ai fixé eps = 0.025 qui fonctionne bien avec différents nombres.
 
-Pour chaque combination $$\left ( i,j \right ) \in \left \{ 0...9 \right \} \times  \left \{ 0...9 \right \}$$ 
-nous calculons dans \autoref{fig:logistique_numbers} a) les scores avec cinq iteration de validation croisée.
-Puis dans \autoref{fig:logistique_numbers} b) il y a le precision (avec validation croisée de cinq scores) de chaque nombre comparée à tous les autres nombres.
-Ça va dire, que nous mettons le classe -1 pour cet nombre et classe 1 pour tous les autres.
+Pour chaque combination $$\left ( i,j \right ) \in \left \{ 0...9 \right \} \times  \left \{ 0...9 \right \}$$
+nous calculons dans \autoref{fig:logistique_numbers} les scores avec cinq iteration de validation croisée.
 
 \begin{figure}[h!]
 \caption{Les nombres un contre un}
@@ -344,13 +342,25 @@ Puis dans \autoref{fig:logistique_numbers} b) il y a le precision (avec validati
 \end{subfigure}
 \end{figure}
 
-Nous pouvons constater dans \autoref{fig:logistique_numbers} a) par exemple que le nombre 5 étant classe -1 et 3 étant classe 1 on obtiens score mal. 
-Également le nombre zéro est difficile de classifier, comme on peut voir dans \autoref{fig:logistique_numbers} a) sur 
-le premier ligne et dans \autoref{fig:logistique_numbers} b) la valeur de 0 sur axis x.
-
-La difficulté avec zéro est probablement à cause de fait, qu'on a beaucoup plus de zeros dans les données que les autres et la forme de zero est distribué largement
+Nous pouvons constater dans \autoref{fig:logistique_numbers} a), avec regression logistique, par exemple que le nombre 5 étant classe -1 et 3 étant classe 1 on obtiens score mal.
+Également le nombre zéro est difficile de classifier, comme on peut voir dans \autoref{fig:logistique_numbers} a) sur
+le premier ligne. La difficulté avec zéro est probablement à cause de fait, qu'on a beaucoup plus de zeros dans les données que les autres et la forme de zero est distribué largement
 et est donc facile de mélanger avec les autres.
+Naif bayes semble fonctionner mieux sur classification un contre un (\autoref{fig:logistique_numbers} a)).
+Seulement le score entre 4 et 9 est moins elevée.
 
+\begin{figure}[h!]
+\caption{Les nombres, un contre les autres}
+\label{fig:USPS_one_vs_all}
+\includegraphics[width=0.5\linewidth]{images/tme3/USPS_one_vs_all.png}
+\centering
+\end{figure}%
+
+Dans \autoref{fig:USPS_one_vs_all} il y a comparison entre les scores de regression logistique et naif bayes
+\footnote{Code dans TME3\slash NaiveBayes\_classifier.py}. Nous calculons le precision (avec validation croisée de cinq scores)
+de chaque nombre comparée à tous les autres nombres. Ça va dire, que nous mettons le classe -1 pour cet nombre et classe 1 pour tous les autres.
+En moyenne, le regression logistique est plus stable et robust, mais parfois on obtient meilleur resultat avec classificateur
+de naif bayes (comme pour nombre 1 : avec NB c'est presque parfait le classification).
 
 \section{TME 4 et 5 : Perceptron}
 
