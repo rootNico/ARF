@@ -1,4 +1,5 @@
 import numpy as np
+from arftools import make_grid
 
 def filter_values(x, y, a,b):
     indexes = np.where(np.logical_or(y == a, y == b))[0]
@@ -50,3 +51,22 @@ def polynomial(X, degree):
     X_p = add_product_column(X)
     out = np.append(X_p, new_cols, axis=1)
     return add_one_column(out)
+
+def isqrt(n):
+    x = n
+    y = (x + 1) // 2
+    while y < x:
+        x = y
+        y = (x + n // x) // 2
+    return x
+
+def gaussian_transformation(X,sigma):
+    grid, _, _ = make_grid(X, step=isqrt(X.shape[1]))
+    new_X = np.zeros((X.shape[0],grid.shape[0]))
+    for i in range(X.shape[0]):
+        for j in range(grid.shape[0]):
+            new_X[i][j] = gaussian(X[i],grid[j],sigma)
+    return new_X
+
+def gaussian(x,e,sigma):
+    return np.exp(-(np.linalg.norm(x - e) ** 2) / sigma**2)

@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from gradient_descend import optimize
-from utils import minibatch_indexes,polynomial
+from utils import minibatch_indexes,polynomial,gaussian_transformation
 
 def decorator_vec(fonc):
     def vecfonc(datax,datay,w,*args,**kwargs):
@@ -43,16 +43,19 @@ def hinge_g(datax,datay,w):
     
 
 class Lineaire(object):
-    def __init__(self,loss=hinge,loss_g=hinge_g,max_iter=1000,eps=0.01, polynomial_degree=0):
+    def __init__(self,loss=hinge,loss_g=hinge_g,max_iter=1000,eps=0.01, polynomial_degree=0, gaussian_kernel=False, sigma=1):
         """ :loss: fonction de cout
             :loss_g: gradient de la fonction de cout
             :max_iter: nombre d'iterations
             :eps: pas de gradient
             :polynomial_degree: 0 degree fait rien
+            :gaussian_kernel:
         """
         self.max_iter, self.eps = max_iter,eps
         self.loss, self.loss_g = loss, loss_g
         self.polynomial_degree = polynomial_degree
+        self.gaussian_kernel = gaussian_kernel
+        self.sigma = sigma
         
     def fit(self,datax,datay,testx=None,testy=None):
         """ :datax: donnees de train
@@ -63,7 +66,10 @@ class Lineaire(object):
         datay = datay.reshape(-1,1)
         N = len(datay)
         datax = datax.reshape(N,-1)
-        datax = polynomial(datax, self.polynomial_degree)
+        if self.gaussian_kernel:
+            datax = gaussian_transformation(datax, self.sigma)
+        else:
+            datax = polynomial(datax, self.polynomial_degree)
         D = datax.shape[1]
         xinit = np.random.random((1,D))
         loss = lambda x: self.loss(datax, datay, x)
@@ -101,13 +107,15 @@ class Lineaire(object):
     def predict(self,datax):
         if len(datax.shape)==1:
             datax = datax.reshape(1,-1)
-        datax = polynomial(datax, self.polynomial_degree)
+        if self.gaussian_kernel:
+            datax = gaussian_transformation(datax, self.sigma)
+        else:
+            datax = polynomial(datax, self.polynomial_degree)
         return np.array([np.sign(np.dot(self.w.T,x)) for x in datax]).flatten()
 
     def score(self,datax,datay):
         prediction = self.predict(datax)
         return np.count_nonzero(prediction == datay) / datax.shape[0]
-
 
 def load_usps(fn):
     with open(fn,"r") as f:
