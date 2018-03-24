@@ -459,8 +459,75 @@ SVM et utiliser kernel gaussian.
 
 \section{TME 6 : Support Vector Machine}
 
+Nous sommes d'abord interessé par les frontières de décisions et les vecteurs supports (les points dont les coefficients sont non nuls).
+Nous effectuons un premier experience (sans validation croisée) et nous obtenons les résultats suivants (\autoref{table:svm1}) pour 1000 points aléatoires:
 
-\subsection{Pistes de recherche}
+\begin{table}[h!]
+	\centering
+	\caption{Les vecteurs supports parmis 1000 points sans validation croisée}
+	\label{table:svm1}
+	\begin{tabular}{|l|c|r|}
+	  \hline
+	  Noyaux utilisé & Taille de vecteurs supports  \\
+	  \hline
+		Polynomial & 278 \\
+		Polynomial (degree 2) & 974 \\
+		Polynomial (degree 3) & 278 \\
+		Polynomial (degree 4) & 982 \\
+		Linear & 213 \\
+		Linear (C = 0.2) & 223 \\
+		Sigmoid & 154 \\
+		Sigmoid (coef0 1) & 194  \\
+		Gaussien & 233 \\
+		Gaussien (gamma 2) & 297 \\
+	  \hline
+	\end{tabular}
+\end{table}
+
+Pour polynomial, on peut noter que son degrees paire (2,4) créent beaucoup plus des coefficients non nul que impaires(1,3),
+propablement à cause de nature des fonctions parabole (degree paire) et cubique (degree impaire).
+Le nombre de paramètres de SVM, qu'on doit considérer, est grande, comme on peut voir dans le \autoref{table:svm1}.
+Pour ça on va utiliser technique GridSearch pour considérer tous les combinations des paramètres et choisir celle avec le meilleur score.
+
+\subsection{GridSearch}
+
+J'ai utilisé le module GridSearchCV de sklearn pour iterer les combinations des paramètres et choisir le meilleur.
+Selon cette discussion \footnote{https://stackoverflow.com/questions/21390570/scikit-learn-svc-coef0-parameter-range} Sigmoid
+n'est pas un valid fonction de noyaux, donc je vais considerer que Gaussian,Lineaire et Polynomial comme les fonction des noyaux.
+Je fais varier gamma, C, degree et coef0.
+
+\begin{figure}[h!]
+\caption{Les données artifiel et ses vecteurs supports, trouvée par GridSearchCV (validation croisée de cinq fois)}
+\label{fig:tme5_swm_grid}
+\begin{subfigure}{.33\textwidth}
+	\centering
+	\includegraphics[width=\linewidth]{images/tme5/grid_arti.png}
+	\caption{Precision moyenne 0.92003}
+\end{subfigure}%
+\begin{subfigure}{.33\textwidth}
+  \centering
+	\includegraphics[width=\linewidth]{images/tme5/grid_arti2.png}
+	\caption{Precision moyenne 0.81418}
+\end{subfigure}
+\begin{subfigure}{.33\textwidth}
+  \centering
+	\includegraphics[width=\linewidth]{images/tme5/grid_arti3.png}
+	\caption{Precision moyenne 0.47953}
+\end{subfigure}
+\end{figure}
+
+Dans le \autoref{fig:tme5_swm_grid} on a trois combinations differentes des paramètres de SVM. \autoref{fig:tme5_swm_grid} a)
+est le meilleur classifier, que GridSearchCV a trouvée, puis b) et c) sont classifiers un peu moins precis.
+L'objectif de SVM est maximiser la marge entre deux classes, pour qu'il soit robuste en face de nouvelles données.
+Maximiser la largeur de la marge est équivalente que minimiser le vecteur W des vecteurs (ou points) supports.
+
+Intuitivement, ça semble que dans le figure a), les vecteurs supports (les points dans le figure) sont concantre et la marge est grande; également la précision de classifier est élevée.
+Par contre dans le figure c) les nombre des points est grande (W est grande?) donc le marge est plus petit et on arrive pas
+classifier bien.
+
+\subsection{Apprentissage multi-classe}
+
+\subsection{String Kernel}
 
 \bibliographystyle{plainnat}
 \bibliography{biblio}
