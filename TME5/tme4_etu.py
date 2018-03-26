@@ -42,7 +42,7 @@ def hinge_g(datax,datay,w):
     return positive.T.dot(datax) / len(datay)
     
 
-class Lineaire(object):
+class Perceptron(object):
     def __init__(self,loss=hinge,loss_g=hinge_g,max_iter=1000,eps=0.01, polynomial_degree=0, gaussian_kernel=False, sigma=1):
         """ :loss: fonction de cout
             :loss_g: gradient de la fonction de cout
