@@ -60,7 +60,7 @@ class MultiClassClassifier:
         return results,prediction
         
     def predict_one_vs_all(self,X):
-        
+        return np.zeros(X.shape[0])
         
     def predict(self,X):
         if self.strategy == "1vs1":

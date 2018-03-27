@@ -527,6 +527,20 @@ classifier bien.
 
 \subsection{Apprentissage multi-classe}
 
+Jusqu'à maintenant nous avons classifié les exemples qu'en cas binaire, mais déjà les données USPS contiennent plusieurs classes.
+Il y a deux stratégies populaires pour classification multi-classe : One-versus-one et One-versus-all.
+J'ai implémente que le one-versus-one, car c'est plus simple et je n'ai plus de temps. \footnote{Code dans TME5\slash MultiClassClassifier.py}.
+
+J'ai testé cette methode avec les données USPS (\autoref{fig:multi_classe}). La classe 0 est present toujours et j'ai introduit les classes un par un.
+Le score se diminue evidement, quand on ajoute plus des classes, mais également parce que certaines classes sont plus difficile de reconnaitre.
+
+\begin{figure}[h!]
+\caption{Classification mutli-classe des USPS}
+\label{fig:multi_classe}
+\includegraphics[width=0.5\linewidth]{images/tme5/multi_classe.png}
+\centering
+\end{figure}%
+
 \subsection{String Kernel}
 
 \bibliographystyle{plainnat}
