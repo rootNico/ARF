@@ -1,6 +1,6 @@
 
 import numpy as np
-from utils import filter_values
+from utils import filter_values, one_againt_others
 
 class MultiClassClassifier:
     
@@ -26,13 +26,23 @@ class MultiClassClassifier:
                         x,y = filter_values(X,Y, yi,yj)
                         clfInstance.fit(x,y)
                         classifiers[yi][yj] = clfInstance
-                        #classifiers[yj][yi] = clfInstance
                         
         return classifiers
+    
+    def fit_one_vs_all(self,X,Y):
+        k = np.unique(Y)
+        classifiers = {}
+        for y in k:
+            clfInstance = self.clf()
+            x,y = one_againt_others(X,Y, y)
+            clfInstance.fit(x,y)
+            classifiers[y] = clfInstance
         
     def fit(self, X,Y):
         if self.strategy == "1vs1":
             self.classifiers = self.fit_one_vs_one(X,Y)
+        if self.strategy == "1vsALL":
+            self.classifiers = self.fit_one_vs_all(X,Y)
         
     def predict_one_vs_one(self, X):
         N = X.shape[0]
@@ -49,10 +59,14 @@ class MultiClassClassifier:
             prediction[i] = results[i].sum(axis=0).argmax()
         return results,prediction
         
+    def predict_one_vs_all(self,X):
+        
         
     def predict(self,X):
         if self.strategy == "1vs1":
             return self.predict_one_vs_one(X)
+        if self.strategy == "1vsALL":
+            return self.predict_one_vs_all(X)
         return np.zeros(X.shape[0])
     
     def score(self,X,Y):
