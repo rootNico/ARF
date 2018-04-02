@@ -11,6 +11,10 @@ def find_all(a_str, sub):
 
 class StringKernel:
     
+    def __init__(self,lambda_param=1, k=2):
+        self.l = lambda_param
+        self.k = k
+    
     def handle_one_example(self, s,t, vocabulary,lambda_param):
         total = 0
         for word in vocabulary:
@@ -18,6 +22,36 @@ class StringKernel:
                 for _ in find_all(t,word):#re.finditer(word,t):
                     total += lambda_param ** (2 * len(word))
         return total
+    
+    def K_prime(self,i, sx, t):
+        if i == 0:
+            print('jou')
+            return 1
+        if min(len(sx)-1, len(t)) < i:
+            return 0
+        x = sx[-1]
+        s = sx[:-1]
+        total = self.l * self.K_prime(i, s,t)
+        for j in range(len(t)):
+            if t[j] == x:
+                power = len(t) - j + 2
+                total += self.K_prime(i-1, s, t[1:j-1]) * (self.l ** power)
+        return total
+                          
+    def K(self, i, sx, t):
+        if min(len(sx)-1, len(t)) < i:
+            return 0
+        x = sx[-1]
+        s = sx[:-1]
+        total = self.l * self.K(i, s,t)
+        for j in range(len(t)):
+            if t[j] == x:
+                total += self.K_prime(i-1, s, t[1:j-1]) * (self.l ** 2)
+        return total
+    
+    def K_hat(self, s,t):
+        return self.K(self.k, s,t) / np.sqrt(self.K(self.k, s,s) * self.K(self.k, t,t)) 
+                          
     
     def build_kernel(self, vocabulary, lambda_param=1):    
         def kernel(X1,X2):
