@@ -544,7 +544,12 @@ Le score se diminue evidement, quand on ajoute plus des classes, mais également
 \subsection{String Kernel}
 
 Dans le SVM on peut remplacer le produit matriciel $<w^T \times x>$ par n'importe quelle fonction de noyaux.
-J'ai implémenté \footnote{Code dans TME5\slash StringKernel.py et TME5\slash text\_svm.ipynb} un noyau pour les chaînes des caractères pour classifier des auteurs différentes des textes, tel que proposé dans l'annonce de TME.
+J'ai implémenté \footnote{Code dans TME5\slash StringKernel.py et TME5\slash text\_svm.ipynb} un noyau pour les chaînes des caractères pour classifier des auteurs différentes des textes,
+tel que proposé dans l'annonce de TME.
+Les textes sont des revues des produits de jeu de données d'Amazon.
+J'ai essayer faire algoritme selon l'article \citep{lodhi2002text}, mais j'ai eu toujours problems avec le classification.
+SVM a classifié les revues toujours à même classe, avec les parametres differentes. Je pense il y a probleme avec mon implementation
+et je n'ai plus de temps le debugger.
 
 \bibliographystyle{plainnat}
 \bibliography{biblio}
