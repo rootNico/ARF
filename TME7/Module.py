@@ -39,7 +39,6 @@ class ModuleLineaire(Module):
         self._nbSortie = nbSortie
         self._parameters = np.random.rand(nbEntree,nbSortie)
         self._gradient = np.zeros((nbEntree,nbSortie))
-        self._loss = MSELoss()
         
     def zero_grad(self):
         ### Annule gradient
@@ -57,13 +56,13 @@ class ModuleLineaire(Module):
         
     def backward_update_gradient(self, input, delta):
         ## Met a jour la valeur du gradient
+        delta = delta.reshape(-1,1)
         input = input.reshape(-1,1)
-        print(input.shape)
-        print(delta.shape)
+        print("input : " + str(input.shape))
+        print("delta : " + str(delta.shape))
         print(self._gradient.shape)
         
-        #delta = delta.reshape(-1,1)
-        gradient_change = np.dot(delta, input)
+        gradient_change = np.dot(delta, input.T).T
         print(gradient_change.shape)
         print('------')
         self._gradient += gradient_change
@@ -71,27 +70,29 @@ class ModuleLineaire(Module):
     def backward_delta(self, input, delta):
         ## Calcul la dérivée de l'erreur
         input = input.reshape(-1,1)
-        sortie = np.dot(self._parameters, input)
-        return self._loss.backward(sortie, delta).T
+        sortie = np.dot(self._parameters.T, input)
+        return sortie * delta
+        #return self._loss.backward(sortie, delta).T
 
 
 class FASigmoide(Module):
     def __init__(self):
         pass
         
-    def f_activation(self, input):
-        return np.power((1 + np.exp(input)), -1)
+    def sigmoid(self, input):
+        return 1.0/(1.0+np.exp(-input))
         
-    def f_activation_g(self, input):
-        return np.dot(input, 1 - input)
+    def sigmoid_prime(self, input):
+        return self.sigmoid(input)*(1-self.sigmoid(input))
     
     def forward(self, X):
         ### Calcule la passe forward
-        return self.f_activation(X)
+        return self.sigmoid(X)
     
     def backward_delta(self, input, delta):
         ## Calcul la dérivée de l'erreur
-        return np.dot(self.f_activation_g(input), delta) 
+        sp = self.sigmoid_prime(input)
+        return delta * sp
 
 class MSELoss(Loss):
     def forward(self, y, yhat):
